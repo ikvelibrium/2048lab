@@ -7,14 +7,15 @@ using System;
 
 public class Tile : MonoBehaviour
 {
-    private int posX;
-    private int posY;
+    public int posX;
+    public int posY;
 
     public int Value;
 
     public int Points => Value == 0 ? 0 : (int)Mathf.Pow(2, Value);
 
     public bool IsEmpty => Value == 0;
+    public bool HasMerged;
 
     public int MaxValue = 11;
 
@@ -25,14 +26,41 @@ public class Tile : MonoBehaviour
     // view controller
     public void SetValue(int x, int y, int value)
     {
-        Debug.Log("sd");
+        
         posX = x; 
         posY = y; 
         Value = value;
 
         UpdateCell();
     }
-    
+    public void IncreaseValue()
+    {
+        Value++;
+        HasMerged = true;
+
+        UpdateCell();
+    }
+     
+    public void ResetMerege()
+    {
+        HasMerged = false;
+    }
+
+    public void Merge(Tile otherTile)
+    {
+        otherTile.IncreaseValue();
+        SetValue(posX, posY, 0);
+
+        UpdateCell();
+    }
+
+    public void MoveToTile(Tile target)
+    {
+        target.SetValue(target.posX, target.posY, Value);
+        SetValue(posX, posY, 0);
+
+        UpdateCell();
+    }
     public void UpdateCell()
     {
         if (text.text == null)
